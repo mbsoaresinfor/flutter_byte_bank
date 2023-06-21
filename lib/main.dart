@@ -6,7 +6,7 @@ class ByteBankAPP extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FormularioTransferencias(),
+      home: ListaTransferencias(),
     );
   }
 }
@@ -33,19 +33,20 @@ class FormularioTransferencias extends StatelessWidget {
               rotulo: "Valor",
               dica: "0.00",
               icondata: Icons.monetization_on),
-          TextButton(onPressed: _criaTransferencia, child: Text('Confirmar')),
+          TextButton(onPressed: () => _criaTransferencia(context), child: Text('Confirmar')),
         ],
       ),
     );
   }
 
-  void _criaTransferencia() {
+  void _criaTransferencia(BuildContext context) {
     debugPrint("cliquei no botão");
     double? numeroConta = double.tryParse(_controllerCampoNumeroConta.text);
     double? valor = double.tryParse(_controllerCampoValor.text);
     if (numeroConta != null && valor != null) {
       final transferencia = Transferencia(valor, numeroConta);
       debugPrint("$transferencia");
+      Navigator.pop(context,transferencia);
     }
   }
 }
@@ -77,21 +78,36 @@ class Editor extends StatelessWidget {
 }
 
 class ListaTransferencias extends StatelessWidget {
+
+  final List<Transferencia> _listaTransferencia = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transferência'),
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
+      floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
+        onPressed: () {
+          debugPrint("cliquei no botão FloatingActionButton");
+          Future future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FormularioTransferencias();
+          }));
+          future?.then((value)  {
+            debugPrint('executando then');
+            debugPrint('$value');
+            _listaTransferencia.add(value);
+          });
+        },
       ),
-      body: Column(
-        children: <Widget>[
-          ItemTransferencia(Transferencia(100, 1000)),
-          ItemTransferencia(Transferencia(200, 2000))
-        ],
+      body: ListView.builder(
+        itemCount: _listaTransferencia.length,
+        itemBuilder: (context,indice){
+          final transferencia = _listaTransferencia[indice];
+          return ItemTransferencia(transferencia);
+        },
       ),
     );
   }
