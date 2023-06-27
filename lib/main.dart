@@ -77,9 +77,15 @@ class Editor extends StatelessWidget {
   }
 }
 
-class ListaTransferencias extends StatelessWidget {
-
+class ListaTransferencias extends StatefulWidget{
   final List<Transferencia> _listaTransferencia = [];
+  @override
+  State<StatefulWidget> createState() {
+    return ListaTransferenciasState();
+  }
+
+}
+class ListaTransferenciasState extends State<ListaTransferencias> {
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +104,14 @@ class ListaTransferencias extends StatelessWidget {
           future?.then((value)  {
             debugPrint('executando then');
             debugPrint('$value');
-            _listaTransferencia.add(value);
+            widget._listaTransferencia.add(value);
           });
         },
       ),
       body: ListView.builder(
-        itemCount: _listaTransferencia.length,
+        itemCount: widget._listaTransferencia.length,
         itemBuilder: (context,indice){
-          final transferencia = _listaTransferencia[indice];
+          final transferencia = widget._listaTransferencia[indice];
           return ItemTransferencia(transferencia);
         },
       ),
