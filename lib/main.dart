@@ -11,7 +11,15 @@ class ByteBankAPP extends StatelessWidget {
   }
 }
 
-class FormularioTransferencias extends StatelessWidget {
+class FormularioTransferencias extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return  FormularioTransferenciasState();
+  }
+
+}
+
+class FormularioTransferenciasState extends State<FormularioTransferencias> {
   final TextEditingController _controllerCampoNumeroConta =
       TextEditingController();
   final TextEditingController _controllerCampoValor = TextEditingController();
@@ -22,20 +30,22 @@ class FormularioTransferencias extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Criando Transferência'),
       ),
-      body: Column(
-        children: [
-          Editor(
-              controlador: _controllerCampoNumeroConta,
-              rotulo: "Número da conta",
-              dica: "0000"),
-          Editor(
-              controlador: _controllerCampoValor,
-              rotulo: "Valor",
-              dica: "0.00",
-              icondata: Icons.monetization_on),
-          TextButton(onPressed: () => _criaTransferencia(context), child: Text('Confirmar')),
-        ],
-      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Editor(
+                controlador: _controllerCampoNumeroConta,
+                rotulo: "Número da conta",
+                dica: "0000"),
+            Editor(
+                controlador: _controllerCampoValor,
+                rotulo: "Valor",
+                dica: "0.00",
+                icondata: Icons.monetization_on),
+            TextButton(onPressed: () => _criaTransferencia(context), child: Text('Confirmar')),
+          ],
+        ),
+      )
     );
   }
 
@@ -104,7 +114,11 @@ class ListaTransferenciasState extends State<ListaTransferencias> {
           future?.then((value)  {
             debugPrint('executando then');
             debugPrint('$value');
-            widget._listaTransferencia.add(value);
+            if(value != null) {
+              setState(() {
+                widget._listaTransferencia.add(value);
+              });
+            }
           });
         },
       ),
